@@ -43,34 +43,43 @@ def readattachment(file_paths):
                 print(file_path + ' 读取超时!')
         # .doc
         if file_path.endswith('.doc'):
-            doc2docx(file_path)
-            doc = docx.Document(file_path + 'x')
-            content = []
-            for para in doc.paragraphs:
-                content.append(para.text)
-            tempfile.writelines(content)
+            try:
+                doc2docx(file_path)
+                doc = docx.Document(file_path + 'x')
+                content = []
+                for para in doc.paragraphs:
+                    content.append(para.text)
+                tempfile.writelines(content)
+            except:
+                print(file_path + ' 读取错误!')
         # .docx
         if file_path.endswith('.docx'):
-            doc = docx.Document(file_path)
-            content = []
-            for para in doc.paragraphs:
-                content.append(para.text)
-            tempfile.writelines(content)
+            try:
+                doc = docx.Document(file_path)
+                content = []
+                for para in doc.paragraphs:
+                    content.append(para.text)
+                tempfile.writelines(content)
+            except:
+                print(file_path + ' 读取错误!')
         # .xls and .xlsx
         if file_path.endswith('.xls') or file_path.endswith('.xlsx'):
-            data = xlrd.open_workbook(file_path)
-            table_names = data.sheet_names()
-            content_list = []
-            content_cleaned = []
-            for table_name in table_names:
-                table = data.sheet_by_name(table_name)
-                col_count = table.ncols
-                for col in range(col_count):
-                    content_list = content_list + table.col_values(col)
-            for element in content_list:
-                if element != '' and (not ((type(element) == int) or (type(element) == float))):
-                    content_cleaned.append(str(element))
-            tempfile.writelines(content_cleaned)
+            try:
+                data = xlrd.open_workbook(file_path)
+                table_names = data.sheet_names()
+                content_list = []
+                content_cleaned = []
+                for table_name in table_names:
+                    table = data.sheet_by_name(table_name)
+                    col_count = table.ncols
+                    for col in range(col_count):
+                        content_list = content_list + table.col_values(col)
+                for element in content_list:
+                    if element != '' and (not ((type(element) == int) or (type(element) == float))):
+                        content_cleaned.append(str(element))
+                tempfile.writelines(content_cleaned)
+            except:
+                print(file_path + ' 读取错误!')
 
 
 def doc2docx(doc_name):
